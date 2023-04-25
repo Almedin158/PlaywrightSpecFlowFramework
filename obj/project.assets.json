@@ -6318,11 +6318,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\AlmedinAlikadic\\source\\repos\\PSF\\PSF.csproj",
+      "projectUniqueName": "C:\\Users\\AlmedinAlikadic\\Desktop\\PlaywrightSpecFlowFramework\\PSF.csproj",
       "projectName": "PSF",
-      "projectPath": "C:\\Users\\AlmedinAlikadic\\source\\repos\\PSF\\PSF.csproj",
+      "projectPath": "C:\\Users\\AlmedinAlikadic\\Desktop\\PlaywrightSpecFlowFramework\\PSF.csproj",
       "packagesPath": "C:\\Users\\AlmedinAlikadic\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\AlmedinAlikadic\\source\\repos\\PSF\\obj\\",
+      "outputPath": "C:\\Users\\AlmedinAlikadic\\Desktop\\PlaywrightSpecFlowFramework\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\AlmedinAlikadic\\AppData\\Roaming\\NuGet\\NuGet.Config",

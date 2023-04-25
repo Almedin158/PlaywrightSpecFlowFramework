@@ -16,6 +16,14 @@ namespace PSF.Support
         public IPage Page;
         public static IBrowser Browser;
         public static IBrowserContext BrowserContext;
+        public static IPlaywright PlaywrightContext;
+
+        enum Browsers
+        {
+            Chromium,
+            Firefox,
+            WebKit
+        }
 
         public Hooks(ScenarioContext scenarioContext)
         {
@@ -27,58 +35,30 @@ namespace PSF.Support
         [BeforeTestRun]
         public static async Task BeforeTestRun()
         {
-            var playwright = await Playwright.CreateAsync();
+            PlaywrightContext = await Playwright.CreateAsync();
 
-            Browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-            {
-                Headless = false,
-                Args = new[] { "--start-maximized" },
-                Timeout = 5000
-            });
+            Browser = await InitializeBrowser(Browsers.Chromium.ToString());
+
             BrowserContext = await Browser.NewContextAsync(new BrowserNewContextOptions
             {
                 ViewportSize = ViewportSize.NoViewport
             });
 
-            var loginPage = await BrowserContext.NewPageAsync();
-            await loginPage.GotoAsync("https://www.saucedemo.com/");
-            await loginPage.Locator("input[id='user-name']").FillAsync("standard_user");
-            await loginPage.Locator("input[id='password']").FillAsync("secret_sauce");
-            await loginPage.Locator("input[id='login-button']").ClickAsync();
+            var page = await BrowserContext.NewPageAsync();
 
-            await BrowserContext.StorageStateAsync(new()
-            {
-                Path = "state.json"
-            });
+            await SetBrowserState(page);
 
-            await loginPage.CloseAsync();
+            await page.CloseAsync();
         }
 
         [BeforeScenario]
         public async Task BeforeScenario()
         {
-            var playwright = await Playwright.CreateAsync();
+            PlaywrightContext = await Playwright.CreateAsync();
             //Initialise a browser - 'Chromium' can be changed to 'Firefox' or 'Webkit'
-            Browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-            {
-                Headless = false, // -> Use this option to be able to see your test running
+            Browser = await InitializeBrowser(Browsers.Chromium.ToString());
 
-                //Args = new[] { "--start-maximized" } with ViewportSize = ViewportSize.NoViewport will maximize the browser. THIS ONLY WORKS FOR CHROMIUM.
-                Args = new[] { "--start-maximized" },
-                Timeout = 5000
-            });
-
-            //Setup a browser context
-            //State is imported based on tags, at the moment, if a test scenario has any tags, the state will be imported, this can also be changed so a specific tag causes the import, in case the general t
-            var browserContextOptions = new BrowserNewContextOptions
-            {
-                ViewportSize = ViewportSize.NoViewport
-            };
-            if (_scenarioContext.ScenarioInfo.Tags.Any())
-            {
-                browserContextOptions.StorageStatePath = "state.json";
-            }
-            BrowserContext = await Browser.NewContextAsync(browserContextOptions);
+            BrowserContext = await GetBrowserState();
 
             Page = await BrowserContext.NewPageAsync();
         }
@@ -93,7 +73,64 @@ namespace PSF.Support
         public static async Task AfterTestRun()
         {
             await BrowserContext.DisposeAsync();
+
             await Browser.DisposeAsync();
+        }
+
+        public static async Task<IBrowser> InitializeBrowser(string browser)
+        {
+            switch(browser) {
+                case "Firefox":
+                    return await PlaywrightContext.Firefox.LaunchAsync(new BrowserTypeLaunchOptions
+                    {
+                        Headless = false,
+                        Timeout = 5000,
+                        SlowMo=500
+                    });
+                
+                case "WebKit":
+                    return await PlaywrightContext.Webkit.LaunchAsync(new BrowserTypeLaunchOptions
+                    {
+                        Headless = false,
+                        Timeout = 5000,
+                        SlowMo=500
+                    });
+            }
+
+            return await PlaywrightContext.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            {
+                Headless = false,
+                Args = new[] { "--start-maximized" },
+                Timeout = 5000,
+                SlowMo = 500
+            });
+        }
+
+        public static async Task SetBrowserState(IPage page)
+        {
+            //Perform the login here
+            await page.GotoAsync("https://www.saucedemo.com/");
+            await page.Locator("input[id='user-name']").FillAsync("standard_user");
+            await page.Locator("input[id='password']").FillAsync("secret_sauce");
+            await page.Locator("input[id='login-button']").ClickAsync();
+
+            await BrowserContext.StorageStateAsync(new()
+            {
+                Path = "state.json"
+            });
+        }
+        public async Task<IBrowserContext> GetBrowserState()
+        {
+            //State is imported based on tags, at the moment, if a test scenario has any tags, the state will be imported, this can also be changed so a specific tag causes the import.
+            var browserContextOptions = new BrowserNewContextOptions
+            {
+                ViewportSize = ViewportSize.NoViewport
+            };
+            if (_scenarioContext.ScenarioInfo.Tags.Any())
+            {
+                browserContextOptions.StorageStatePath = "state.json";
+            }
+            return await Browser.NewContextAsync(browserContextOptions);
         }
     }
 }
