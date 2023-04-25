@@ -20,7 +20,7 @@ namespace PSF.StepDefinitions
         public async Task GivenTheFirstNumberIsnt(int p0, Table table)
         {
             await _page.GotoAsync("https://www.saucedemo.com/inventory.html");
-            //await searchTerm.ClickAsync();
+            await searchTerm.ClickAsync();
         }
     }
 }

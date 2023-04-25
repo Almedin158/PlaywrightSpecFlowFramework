@@ -1,5 +1,8 @@
-﻿using Microsoft.Playwright;
+﻿using AventStack.ExtentReports;
+using AventStack.ExtentReports.Reporter;
+using Microsoft.Playwright;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using TechTalk.SpecFlow;
 
 //Allows parallel executions of test cases inside different feature files (meaning multiple test cases in one feature file can not run in parallel)
@@ -17,6 +20,8 @@ namespace PSF.Support
         public static IBrowser Browser;
         public static IBrowserContext BrowserContext;
         public static IPlaywright PlaywrightContext;
+        private static ExtentReports ExtentReport;
+        private ExtentTest ExtentTest;
 
         enum Browsers
         {
@@ -34,7 +39,8 @@ namespace PSF.Support
         public static async Task BeforeTestRun()
         {
             //Add extent report here
-
+            ExtentReport = new ExtentReports();
+            ExtentReport.AttachReporter(new ExtentHtmlReporter(Directory.GetCurrentDirectory()));
 
             //To skip loggin in each test, you can simply call SetBrowserState and perform the login inside of the function
             await SetBrowserState();
@@ -43,6 +49,8 @@ namespace PSF.Support
         [BeforeScenario]
         public async Task BeforeScenario()
         {
+            ExtentTest = ExtentReport.CreateTest(TestContext.CurrentContext.Test.Name);
+
             PlaywrightContext = await Playwright.CreateAsync();
             //Initialise a browser - 'Chromium' can be changed to 'Firefox' or 'Webkit'
             Browser = await InitializeBrowser(Browsers.Chromium.ToString());
@@ -56,6 +64,42 @@ namespace PSF.Support
         [AfterScenario]
         public async Task AfterScenario()
         {
+            var status = TestContext.CurrentContext.Result.Outcome.Status;
+            var stackTrace = string.IsNullOrEmpty(TestContext.CurrentContext.Result.StackTrace)
+                    ? ""
+                    : string.Format("{0}", TestContext.CurrentContext.Result.StackTrace);
+            Status logStatus;
+            switch (status)
+            {
+                case TestStatus.Failed:
+                    logStatus = Status.Fail;
+                    break;
+                case TestStatus.Inconclusive:
+                    logStatus = Status.Warning;
+                    break;
+                case TestStatus.Skipped:
+                    logStatus = Status.Skip;
+                    break;
+                default:
+                    logStatus = Status.Pass;
+                    break;
+            }
+
+            if (logStatus == Status.Fail)
+            {
+                // Take a screenshot of the browser and save it to the specified path
+                var screenshotData = await Page.ScreenshotAsync(new PageScreenshotOptions
+                {
+                    Type = ScreenshotType.Jpeg,
+                    Quality = 80
+                });
+                var base64String = Convert.ToBase64String(screenshotData);
+
+                ExtentTest.Info("Screenshot: ", MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64String).Build());
+                ExtentTest.Log(logStatus, "Message: " + TestContext.CurrentContext.Result.Message);
+                ExtentTest.Log(logStatus, "Stack trace: " + stackTrace);
+            }
+
             await Page.CloseAsync();
         }
 
@@ -65,6 +109,8 @@ namespace PSF.Support
             await BrowserContext.DisposeAsync();
 
             await Browser.DisposeAsync();
+
+            ExtentReport.Flush();
         }
 
         public static async Task<IBrowser> InitializeBrowser(string browser)
@@ -109,7 +155,6 @@ namespace PSF.Support
 
             var page = await BrowserContext.NewPageAsync();
 
-            await page.CloseAsync();
             //Perform the login here
             await page.GotoAsync("https://www.saucedemo.com/");
             await page.Locator("input[id='user-name']").FillAsync("standard_user");
@@ -120,6 +165,8 @@ namespace PSF.Support
             {
                 Path = "state.json"
             });
+
+            await page.CloseAsync();
         }
 
         public async Task<IBrowserContext> GetBrowserState()

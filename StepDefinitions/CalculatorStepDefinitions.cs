@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using NUnit.Framework;
 using PSF.Support;
 using TechTalk.SpecFlow;
 
@@ -21,7 +22,11 @@ namespace PSF.StepDefinitions
         public async Task GivenTheFirstNumberIs(int p0, Table table)
         {
             await _page.GotoAsync("https://www.saucedemo.com/inventory.html");
-            //await searchTerm.ClickAsync();
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual("asdfasdfsadf", _page.Url);
+                Assert.IsTrue("adfasdf".Length == 0);
+            });
         }
     }
 }
