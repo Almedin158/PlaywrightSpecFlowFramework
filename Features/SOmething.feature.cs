@@ -101,6 +101,9 @@ namespace PSF.Features
 #line 6
  testRunner.Given("the first number isnt 50", ((string)(null)), table2, "Given ");
 #line hidden
+#line 9
+ testRunner.Then("The number is 50", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
             }
             this.ScenarioCleanup();
         }

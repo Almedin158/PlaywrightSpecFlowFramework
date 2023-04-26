@@ -22,8 +22,10 @@ namespace PSF.Support
         public static IPlaywright PlaywrightContext;
         private static ExtentReports ExtentReport;
         private ExtentTest ExtentTest;
+        private ExtentTest StepsNode;
+        public string CurrentStep;
 
-        enum Browsers
+        public enum Browsers
         {
             Chromium,
             Firefox,
@@ -51,9 +53,11 @@ namespace PSF.Support
         {
             ExtentTest = ExtentReport.CreateTest(TestContext.CurrentContext.Test.Name);
 
+            StepsNode = ExtentTest.CreateNode("Steps:");
+
             PlaywrightContext = await Playwright.CreateAsync();
             //Initialise a browser - 'Chromium' can be changed to 'Firefox' or 'Webkit'
-            Browser = await InitializeBrowser(Browsers.Chromium.ToString());
+            Browser = await InitializeBrowser(Browsers.Chromium);
 
             //This will cause an error if SetBrowserState isn't performed and a state.json file does not exist
             BrowserContext = await GetBrowserState();
@@ -61,32 +65,31 @@ namespace PSF.Support
             Page = await BrowserContext.NewPageAsync();
         }
 
+        [BeforeStep]
+        public void BeforeStep()
+        {
+            CurrentStep = _scenarioContext.StepContext.StepInfo.Text;
+        }
+
+        [AfterStep]
+        public void AfterStep() 
+        {
+            if (_scenarioContext.TestError == null)
+            {
+                StepsNode.Log(Status.Pass, CurrentStep);
+            }
+        }
+
         [AfterScenario]
         public async Task AfterScenario()
         {
             var status = TestContext.CurrentContext.Result.Outcome.Status;
-            var stackTrace = string.IsNullOrEmpty(TestContext.CurrentContext.Result.StackTrace)
-                    ? ""
-                    : string.Format("{0}", TestContext.CurrentContext.Result.StackTrace);
-            Status logStatus;
-            switch (status)
-            {
-                case TestStatus.Failed:
-                    logStatus = Status.Fail;
-                    break;
-                case TestStatus.Inconclusive:
-                    logStatus = Status.Warning;
-                    break;
-                case TestStatus.Skipped:
-                    logStatus = Status.Skip;
-                    break;
-                default:
-                    logStatus = Status.Pass;
-                    break;
-            }
 
-            if (logStatus == Status.Fail)
+            if (status == TestStatus.Failed)
             {
+                var stackTrace = string.IsNullOrEmpty(TestContext.CurrentContext.Result.StackTrace)
+                   ? ""
+                   : string.Format("{0}", TestContext.CurrentContext.Result.StackTrace);
                 // Take a screenshot of the browser and save it to the specified path
                 var screenshotData = await Page.ScreenshotAsync(new PageScreenshotOptions
                 {
@@ -96,11 +99,17 @@ namespace PSF.Support
                 var base64String = Convert.ToBase64String(screenshotData);
 
                 ExtentTest.Info("Screenshot: ", MediaEntityBuilder.CreateScreenCaptureFromBase64String(base64String).Build());
-                ExtentTest.Log(logStatus, "Message: " + TestContext.CurrentContext.Result.Message);
-                ExtentTest.Log(logStatus, "Stack trace: " + stackTrace);
+
+                
+                StepsNode.Log(Status.Fail, CurrentStep);
+                var errorNode = ExtentTest.CreateNode("Info:");
+                errorNode.Log(Status.Info, "Message: " + TestContext.CurrentContext.Result.Message);
+                errorNode.Log(Status.Info, "Stack trace: " + stackTrace);
             }
 
             await Page.CloseAsync();
+
+            //var a = _scenarioContext.StepContext.StepInfo.Text;
         }
 
         [AfterTestRun]
@@ -113,10 +122,10 @@ namespace PSF.Support
             ExtentReport.Flush();
         }
 
-        public static async Task<IBrowser> InitializeBrowser(string browser)
+        public static async Task<IBrowser> InitializeBrowser(Browsers browser)
         {
             switch(browser) {
-                case "Firefox":
+                case Browsers.Firefox:
                     return await PlaywrightContext.Firefox.LaunchAsync(new BrowserTypeLaunchOptions
                     {
                         Headless = false,
@@ -124,7 +133,7 @@ namespace PSF.Support
                         SlowMo=500
                     });
                 
-                case "WebKit":
+                case Browsers.WebKit:
                     return await PlaywrightContext.Webkit.LaunchAsync(new BrowserTypeLaunchOptions
                     {
                         Headless = false,
@@ -146,7 +155,7 @@ namespace PSF.Support
         {
             PlaywrightContext = await Playwright.CreateAsync();
 
-            Browser = await InitializeBrowser(Browsers.Chromium.ToString());
+            Browser = await InitializeBrowser(Browsers.Chromium);
 
             BrowserContext = await Browser.NewContextAsync(new BrowserNewContextOptions
             {
@@ -176,10 +185,12 @@ namespace PSF.Support
             {
                 ViewportSize = ViewportSize.NoViewport
             };
+
             if (_scenarioContext.ScenarioInfo.Tags.Any())
             {
                 browserContextOptions.StorageStatePath = "state.json";
             }
+
             return await Browser.NewContextAsync(browserContextOptions);
         }
     }

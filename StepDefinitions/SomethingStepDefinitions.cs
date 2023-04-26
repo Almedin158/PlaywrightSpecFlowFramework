@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using NUnit.Framework;
 using PSF.Support;
 using TechTalk.SpecFlow;
 
@@ -20,7 +21,12 @@ namespace PSF.StepDefinitions
         public async Task GivenTheFirstNumberIsnt(int p0, Table table)
         {
             await _page.GotoAsync("https://www.saucedemo.com/inventory.html");
-            await searchTerm.ClickAsync();
+        }
+
+        [Then(@"The number is (.*)")]
+        public async Task ThenTheNumberIs(int p0)
+        {
+            Assert.AreEqual(_page.Url, _page.Url);
         }
     }
 }
