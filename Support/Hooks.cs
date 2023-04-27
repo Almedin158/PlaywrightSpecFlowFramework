@@ -103,8 +103,8 @@ namespace PSF.Support
                 
                 StepsNode.Log(Status.Fail, CurrentStep);
                 var errorNode = ExtentTest.CreateNode("Info:");
-                errorNode.Log(Status.Info, "Message: " + TestContext.CurrentContext.Result.Message);
-                errorNode.Log(Status.Info, "Stack trace: " + stackTrace);
+                errorNode.Info("Message: " + TestContext.CurrentContext.Result.Message);
+                errorNode.Info("Stack trace: " + stackTrace);
             }
 
             await Page.CloseAsync();
