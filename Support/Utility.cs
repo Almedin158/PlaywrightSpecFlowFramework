@@ -1,10 +1,12 @@
-﻿using System.Text;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace PSF.Support
 {
-    internal static class Utility
+    internal class Utility
     {
-        public static string GenerateName(int minLength, int maxLength)
+        public string GenerateName(int minLength, int maxLength)
         {
             Random random = new Random();
 
@@ -26,16 +28,43 @@ namespace PSF.Support
 
             return nameBuilder.ToString();
         }
-        public static string GenerateEmail(string name)
+        public string GenerateEmail(string name)
         {
             string domain = "email.dummy";
             return $"{name}@{domain}";
         }
-        public static int GenerateRandomNumber(int minNumber, int maxNumber)
+        public int GenerateRandomNumber(int minNumber, int maxNumber)
         {
             Random random = new Random();
             return random.Next(minNumber, maxNumber + 1);
         }
+        public dynamic ReadFromJsonFile(string filePath)
+        {
+            // Check if the file exists
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"The file '{filePath}' does not exist.");
+            }
 
+            // Read the contents of the file
+            string json = File.ReadAllText(filePath);
+
+            // Deserialize the JSON into an object
+            dynamic obj = JsonConvert.DeserializeObject(json);
+
+            return obj;
+        }
+
+        public void WriteToJsonFile(string filePath, object obj)
+        {
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"The file '{filePath}' does not exist.");
+            }
+
+            string updatedJson = JsonConvert.SerializeObject(obj);
+
+            File.WriteAllText(filePath, updatedJson);
+        }
     }
 }

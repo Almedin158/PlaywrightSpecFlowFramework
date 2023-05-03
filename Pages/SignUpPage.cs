@@ -7,10 +7,11 @@ namespace PSF.Pages
     internal class SignUpPage
     {
         private IPage _page;
-
+        private Utility _utility;
         public SignUpPage(Hooks hooks)
         {
-            _page = hooks.Page;   
+            _page = hooks.Page;
+            _utility = new Utility();
         }
 
         ILocator _enterAccountInformation => _page.GetByText("Enter Account Information");
@@ -40,10 +41,10 @@ namespace PSF.Pages
         public async Task EnterTitleNameEmailPasswordAndDateOfBirth()
         {
             await _radiobtnTitle.ClickAsync();
-            await _txtPassword.FillAsync(Utility.GenerateName(3, 8));
-            await _ddDayOfBirth.SelectOptionAsync(new[] { $"{Utility.GenerateRandomNumber(1, 28)}" });
-            await _ddMonthOfBirth.SelectOptionAsync(new[] { $"{Utility.GenerateRandomNumber(1, 12)}" });
-            await _ddYearOfBirth.SelectOptionAsync(new[] { $"{Utility.GenerateRandomNumber(1900, 2021)}" });
+            await _txtPassword.FillAsync(_utility.GenerateName(3, 8));
+            await _ddDayOfBirth.SelectOptionAsync(new[] { $"{_utility.GenerateRandomNumber(1, 28)}" });
+            await _ddMonthOfBirth.SelectOptionAsync(new[] { $"{_utility.GenerateRandomNumber(1, 12)}" });
+            await _ddYearOfBirth.SelectOptionAsync(new[] { $"{_utility.GenerateRandomNumber(1900, 2021)}" });
         }
         public async Task SelectNewsLetter()
         {
@@ -55,16 +56,16 @@ namespace PSF.Pages
         }
         public async Task EnterFirstNameLastNameCompanyAddressAddress2CountryStateCityZipcodeMobileNumber()
         {
-            await _txtFirstName.FillAsync(Utility.GenerateName(5, 12));
-            await _txtLastName.FillAsync(Utility.GenerateName(5, 12));
-            await _txtCompany.FillAsync(Utility.GenerateName(5, 12));
-            await _txtAddress.FillAsync(Utility.GenerateName(5, 12));
-            await _txtAddress2.FillAsync(Utility.GenerateName(5, 12));
+            await _txtFirstName.FillAsync(_utility.GenerateName(5, 12));
+            await _txtLastName.FillAsync(_utility.GenerateName(5, 12));
+            await _txtCompany.FillAsync(_utility.GenerateName(5, 12));
+            await _txtAddress.FillAsync(_utility.GenerateName(5, 12));
+            await _txtAddress2.FillAsync(_utility.GenerateName(5, 12));
             await _comboboxCountry.SelectOptionAsync(new[] { "Singapore" });
-            await _txtState.FillAsync(Utility.GenerateName(5, 12));
-            await _txtCity.FillAsync(Utility.GenerateName(5, 12));
-            await _txtZipCode.FillAsync(Utility.GenerateRandomNumber(10000, 99999).ToString());
-            await _txtMobileNumber.FillAsync(Utility.GenerateRandomNumber(000000000, 999999999).ToString());
+            await _txtState.FillAsync(_utility.GenerateName(5, 12));
+            await _txtCity.FillAsync(_utility.GenerateName(5, 12));
+            await _txtZipCode.FillAsync(_utility.GenerateRandomNumber(10000, 99999).ToString());
+            await _txtMobileNumber.FillAsync(_utility.GenerateRandomNumber(000000000, 999999999).ToString());
         }
         public async Task ClickCreateAccount()
         {

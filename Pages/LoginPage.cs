@@ -7,10 +7,12 @@ namespace PSF.Pages
     internal class LoginPage
     {
         private IPage _page;
+        private Utility _utility;
 
         public LoginPage(Hooks hooks)
         {
             _page = hooks.Page;
+            _utility = new Utility();
         }
 
         ILocator _hdngNewUserSignUp => _page.GetByRole(AriaRole.Heading, new() { Name = "New User Signup!" });
@@ -24,9 +26,9 @@ namespace PSF.Pages
         }
         public async Task EnterNameAndEmail()
         {
-            string Name = Utility.GenerateName(5,10);
+            string Name = _utility.GenerateName(5,10);
             await _txtName.FillAsync(Name);
-            string Email = Utility.GenerateEmail(Name);
+            string Email = _utility.GenerateEmail(Name);
             await _txtSingUpEmail.FillAsync(Email);
         }
         public async Task ClickSignUp()
