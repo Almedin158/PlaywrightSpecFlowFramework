@@ -75,11 +75,11 @@ namespace PSF.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Add three numbers")]
-        [NUnit.Framework.CategoryAttribute("WithImport")]
+        [NUnit.Framework.CategoryAttribute("SetState")]
         public void AddThreeNumbers()
         {
             string[] tagsOfScenario = new string[] {
-                    "WithImport"};
+                    "SetState"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add three numbers", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 5

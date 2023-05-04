@@ -122,13 +122,13 @@ namespace PSF.Support
             ExtentReport.Flush();
         }
 
-        public static async Task<IBrowser> InitializeBrowser(Browsers browser)
+        public static async Task<IBrowser> InitializeBrowser(Browsers browser, bool headless=false)
         {
             switch(browser) {
                 case Browsers.Firefox:
                     return await PlaywrightContext.Firefox.LaunchAsync(new BrowserTypeLaunchOptions
                     {
-                        Headless = false,
+                        Headless = headless,
                         Timeout = 5000,
                         SlowMo=500
                     });
@@ -136,7 +136,7 @@ namespace PSF.Support
                 case Browsers.WebKit:
                     return await PlaywrightContext.Webkit.LaunchAsync(new BrowserTypeLaunchOptions
                     {
-                        Headless = false,
+                        Headless = headless,
                         Timeout = 5000,
                         SlowMo=500
                     });
@@ -144,7 +144,7 @@ namespace PSF.Support
 
             return await PlaywrightContext.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
-                Headless = false,
+                Headless = headless,
                 Args = new[] { "--start-maximized" },
                 Timeout = 5000,
                 SlowMo = 500
@@ -155,7 +155,7 @@ namespace PSF.Support
         {
             PlaywrightContext = await Playwright.CreateAsync();
 
-            Browser = await InitializeBrowser(Browsers.Chromium);
+            Browser = await InitializeBrowser(Browsers.Chromium, true);
 
             BrowserContext = await Browser.NewContextAsync(new BrowserNewContextOptions
             {
@@ -180,13 +180,13 @@ namespace PSF.Support
 
         public async Task<IBrowserContext> GetBrowserState()
         {
-            //State is imported based on tags, at the moment, if a test scenario has any tags, the state will be imported, this can also be changed so a specific tag causes the import.
+            //State is imported based on tags, at the moment, if a test scenario has a SetState tag, the state will be imported.
             var browserContextOptions = new BrowserNewContextOptions
             {
                 ViewportSize = ViewportSize.NoViewport
             };
 
-            if (_scenarioContext.ScenarioInfo.Tags.Any())
+            if (_scenarioContext.ScenarioInfo.Tags.Any(tag => tag.Equals("SetState")))
             {
                 browserContextOptions.StorageStatePath = "state.json";
             }
