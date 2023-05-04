@@ -94,7 +94,8 @@ namespace PSF.Support
                 var screenshotData = await Page.ScreenshotAsync(new PageScreenshotOptions
                 {
                     Type = ScreenshotType.Jpeg,
-                    Quality = 80
+                    Quality = 80,                    FullPage = true
+
                 });
                 var base64String = Convert.ToBase64String(screenshotData);
 
@@ -172,7 +173,7 @@ namespace PSF.Support
 
             await BrowserContext.StorageStateAsync(new()
             {
-                Path = "state.json"
+                Path = "../../../state.json"
             });
 
             await page.CloseAsync();
@@ -188,7 +189,7 @@ namespace PSF.Support
 
             if (_scenarioContext.ScenarioInfo.Tags.Any(tag => tag.Equals("SetState")))
             {
-                browserContextOptions.StorageStatePath = "state.json";
+                browserContextOptions.StorageStatePath = "../../../state.json";
             }
 
             return await Browser.NewContextAsync(browserContextOptions);
