@@ -12,7 +12,10 @@ namespace PSF.Pages
         {
             _page = hooks.Page;
         }
-
+        public async Task AssertUrl()
+        {
+            Assert.AreEqual("https://automationexercise.com/", _page.Url);
+        }
         public async Task GoTo()
         {
             await _page.GotoAsync("https://automationexercise.com/");

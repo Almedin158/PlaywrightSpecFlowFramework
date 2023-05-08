@@ -1,6 +1,6 @@
 ﻿Feature: RegisterUser
 
-Scenario: RegisterUser
+Scenario: Register user
 	When Navigate to url http://automationexercise.com
 	Then Verify that home page is visible successfully
 	When Click on Signup / Login button
@@ -15,6 +15,18 @@ Scenario: RegisterUser
 	And Click Create Account button
 	Then Verify that ACCOUNT CREATED! is visible
 	When Click Continue button
+#	And Close ad
 	Then Verify that Logged in as username is visible
 	When Click Delete Account button
 	Then Verify that ACCOUNT DELETED! is visible and click Continue button
+
+Scenario: Register User with existing email
+	When Navigate to url http://automationexercise.com
+	Then Verify that home page is visible successfully
+	When Click on Signup / Login button
+	Then Verify New User Signup! is visible
+	When Enter name and already registered email address
+	| Name       | Email                     |
+	| Ultradummy | ultradummy@ultradummy.com |
+	And Click Signup button
+	Then Verify error Email Address already exist! is visible

@@ -15,23 +15,23 @@ namespace PSF.Pages
         }
 
         ILocator _enterAccountInformation => _page.GetByText("Enter Account Information");
-        ILocator _radiobtnTitle => _page.GetByLabel("Mr.");
-        ILocator _txtPassword => _page.GetByLabel("Password");
+        ILocator _radioBtnTitle => _page.GetByLabel("Mr.");
+        ILocator _inputPassword => _page.GetByLabel("Password");
         ILocator _ddDayOfBirth => _page.Locator("#days");
         ILocator _ddMonthOfBirth => _page.Locator("#months");
         ILocator _ddYearOfBirth => _page.Locator("#years");
-        ILocator _checkboxNewsLetter => _page.GetByLabel("Sign up for our newsletter!");
-        ILocator _checkboxSpecialOffer => _page.GetByLabel("Receive special offers from our partners!");
-        ILocator _txtFirstName => _page.GetByLabel("First name *");
-        ILocator _txtLastName => _page.GetByLabel("Last name *");
-        ILocator _txtCompany => _page.GetByLabel("Company", new() { Exact= true});
-        ILocator _txtAddress => _page.GetByLabel("Address *");
-        ILocator _txtAddress2 => _page.GetByLabel("Address 2");
-        ILocator _comboboxCountry => _page.GetByRole(AriaRole.Combobox, new() { Name = "Country" });
-        ILocator _txtState => _page.GetByLabel("State *");
-        ILocator _txtCity => _page.GetByLabel("City *");
-        ILocator _txtZipCode => _page.Locator("#zipcode");
-        ILocator _txtMobileNumber => _page.GetByLabel("Mobile Number *");
+        ILocator _checkBoxNewsLetter => _page.GetByLabel("Sign up for our newsletter!");
+        ILocator _checkBoxSpecialOffer => _page.GetByLabel("Receive special offers from our partners!");
+        ILocator _inputFirstName => _page.GetByLabel("First name *");
+        ILocator _inputLastName => _page.GetByLabel("Last name *");
+        ILocator _inputCompany => _page.GetByLabel("Company", new() { Exact= true});
+        ILocator _inputAddress => _page.GetByLabel("Address *");
+        ILocator _inputAddress2 => _page.GetByLabel("Address 2");
+        ILocator _comboBoxCountry => _page.GetByRole(AriaRole.Combobox, new() { Name = "Country" });
+        ILocator _inputState => _page.GetByLabel("State *");
+        ILocator _inputCity => _page.GetByLabel("City *");
+        ILocator _inputZipCode => _page.Locator("#zipcode");
+        ILocator _inputMobileNumber => _page.GetByLabel("Mobile Number *");
         ILocator _btnCreateAccount => _page.GetByRole(AriaRole.Button, new() { Name = "Create Account" });
 
         public async Task AssertEnterAccountInformationVisible()
@@ -40,32 +40,32 @@ namespace PSF.Pages
         }
         public async Task EnterTitleNameEmailPasswordAndDateOfBirth()
         {
-            await _radiobtnTitle.ClickAsync();
-            await _txtPassword.FillAsync(_utility.GenerateName(3, 8));
-            await _ddDayOfBirth.SelectOptionAsync(new[] { $"{_utility.GenerateRandomNumber(1, 28)}" });
-            await _ddMonthOfBirth.SelectOptionAsync(new[] { $"{_utility.GenerateRandomNumber(1, 12)}" });
-            await _ddYearOfBirth.SelectOptionAsync(new[] { $"{_utility.GenerateRandomNumber(1900, 2021)}" });
+            await _radioBtnTitle.ClickAsync();
+            await _inputPassword.FillAsync(_utility.GenerateName(3, 8));
+            await _ddDayOfBirth.SelectOptionAsync(new[] { $"{_utility.GenerateNumber(1, 28)}" });
+            await _ddMonthOfBirth.SelectOptionAsync(new[] { $"{_utility.GenerateNumber(1, 12)}" });
+            await _ddYearOfBirth.SelectOptionAsync(new[] { $"{_utility.GenerateNumber(1900, 2021)}" });
         }
         public async Task SelectNewsLetter()
         {
-            await _checkboxNewsLetter.ClickAsync();
+            await _checkBoxNewsLetter.ClickAsync();
         }
         public async Task SelectSpecialOffer()
         {
-            await _checkboxSpecialOffer.ClickAsync();
+            await _checkBoxSpecialOffer.ClickAsync();
         }
         public async Task EnterFirstNameLastNameCompanyAddressAddress2CountryStateCityZipcodeMobileNumber()
         {
-            await _txtFirstName.FillAsync(_utility.GenerateName(5, 12));
-            await _txtLastName.FillAsync(_utility.GenerateName(5, 12));
-            await _txtCompany.FillAsync(_utility.GenerateName(5, 12));
-            await _txtAddress.FillAsync(_utility.GenerateName(5, 12));
-            await _txtAddress2.FillAsync(_utility.GenerateName(5, 12));
-            await _comboboxCountry.SelectOptionAsync(new[] { "Singapore" });
-            await _txtState.FillAsync(_utility.GenerateName(5, 12));
-            await _txtCity.FillAsync(_utility.GenerateName(5, 12));
-            await _txtZipCode.FillAsync(_utility.GenerateRandomNumber(10000, 99999).ToString());
-            await _txtMobileNumber.FillAsync(_utility.GenerateRandomNumber(000000000, 999999999).ToString());
+            await _inputFirstName.FillAsync(_utility.GenerateName(5, 12));
+            await _inputLastName.FillAsync(_utility.GenerateName(5, 12));
+            await _inputCompany.FillAsync(_utility.GenerateName(5, 12));
+            await _inputAddress.FillAsync(_utility.GenerateName(5, 12));
+            await _inputAddress2.FillAsync(_utility.GenerateName(5, 12));
+            await _comboBoxCountry.SelectOptionAsync(new[] { "Singapore" });
+            await _inputState.FillAsync(_utility.GenerateName(5, 12));
+            await _inputCity.FillAsync(_utility.GenerateName(5, 12));
+            await _inputZipCode.FillAsync(_utility.GenerateNumber(10000, 99999).ToString());
+            await _inputMobileNumber.FillAsync(_utility.GenerateNumber(000000000, 999999999).ToString());
         }
         public async Task ClickCreateAccount()
         {

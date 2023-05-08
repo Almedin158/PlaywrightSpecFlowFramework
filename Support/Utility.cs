@@ -33,10 +33,26 @@ namespace PSF.Support
             string domain = "email.dummy";
             return $"{name}@{domain}";
         }
-        public int GenerateRandomNumber(int minNumber, int maxNumber)
+        public int GenerateNumber(int minNumber, int maxNumber)
         {
             Random random = new Random();
             return random.Next(minNumber, maxNumber + 1);
+        }
+        public string GenerateSentence()
+        {
+            int numberOfWords = GenerateNumber(5, 20);
+            string sentence = "";
+
+            for(int i = 0; i < numberOfWords; i++)
+            {
+                sentence += GenerateName(3, 12);
+                sentence += " ";
+            }
+
+            sentence = sentence.Substring(0, sentence.Length - 1);
+            sentence = sentence.ToLower();
+
+            return char.ToUpper(sentence[0])+ sentence.Substring(1);
         }
         public dynamic ReadFromJsonFile(string filePath)
         {
@@ -54,6 +70,13 @@ namespace PSF.Support
 
             return obj;
         }
+
+        /*
+         var obj = _utility.ReadFromJsonFile($"{Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName}\\Json\\DummyJson.json");
+            obj.age = 1;
+            obj.grades.science = 11;
+            _utility.WriteToJsonFile($"{Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName}\\Json\\DummyJson.json", obj);
+         */
 
         public void WriteToJsonFile(string filePath, object obj)
         {

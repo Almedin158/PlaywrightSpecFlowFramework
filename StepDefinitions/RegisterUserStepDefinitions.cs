@@ -13,6 +13,7 @@ namespace PSF.StepDefinitions
         AccountCreatedPage AccountCreatedPage;
         DeleteAccountPage DeleteAccountPage;
         HeaderPage HeaderPage;
+        AdPage AdPage;
         public RegisterUserStepDefinitions(Hooks hooks)
         {
             HomePage = new HomePage(hooks);
@@ -21,6 +22,7 @@ namespace PSF.StepDefinitions
             AccountCreatedPage = new AccountCreatedPage(hooks);
             DeleteAccountPage = new DeleteAccountPage(hooks);
             HeaderPage = new HeaderPage(hooks);
+            AdPage = new AdPage(hooks);
         }
 
         [When(@"Navigate to url http://automationexercise\.com")]
@@ -50,7 +52,7 @@ namespace PSF.StepDefinitions
         [When(@"Enter name and email address")]
         public async Task WhenEnterNameAndEmailAddress()
         {
-            await LoginPage.EnterNameAndEmail();
+            await LoginPage.EnterNameAndEmail(null);
         }
 
         [When(@"Click Signup button")]
@@ -107,6 +109,13 @@ namespace PSF.StepDefinitions
             await AccountCreatedPage.ClickContinue();
         }
 
+        [When(@"Close ad")]
+        public async Task WhenCloseAd1()
+        {
+            await AdPage.CloseAd();
+        }
+
+
         [Then(@"Verify that Logged in as username is visible")]
         public async Task ThenVerifyThatLoggedInAsUsernameIsVisible()
         {
@@ -123,6 +132,18 @@ namespace PSF.StepDefinitions
         public async Task ThenVerifyThatACCOUNTDELETEDIsVisibleAndClickContinueButton()
         {
             await DeleteAccountPage.AssertAccountDeletedVisibleAndContinue();
+        }
+
+        [When(@"Enter name and already registered email address")]
+        public async Task WhenEnterNameAndAlreadyRegisteredEmailAddress(Table table)
+        {
+            await LoginPage.EnterNameAndEmail(table);
+        }
+
+        [Then(@"Verify error Email Address already exist! is visible")]
+        public async Task ThenVerifyErrorEmailAddressAlreadyExistIsVisible()
+        {
+            await LoginPage.AssertEmailAddressAlreadyExistVisible();
         }
     }
 }

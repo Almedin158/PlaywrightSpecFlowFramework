@@ -2,13 +2,14 @@
 using AventStack.ExtentReports.Reporter;
 using Microsoft.Playwright;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using NUnit.Framework.Interfaces;
 using TechTalk.SpecFlow;
 
 //Allows parallel executions of test cases inside different feature files (meaning multiple test cases in one feature file can not run in parallel)
 [assembly:Parallelizable(ParallelScope.Fixtures)]
 //Limits the number of possible parallel executions
-[assembly:LevelOfParallelism(2)]
+[assembly:LevelOfParallelism(4)]
 
 namespace PSF.Support
 {
@@ -184,7 +185,7 @@ namespace PSF.Support
             //State is imported based on tags, at the moment, if a test scenario has a SetState tag, the state will be imported.
             var browserContextOptions = new BrowserNewContextOptions
             {
-                ViewportSize = ViewportSize.NoViewport
+                ViewportSize = ViewportSize.NoViewport,
             };
 
             if (_scenarioContext.ScenarioInfo.Tags.Any(tag => tag.Equals("SetState")))
