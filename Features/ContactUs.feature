@@ -10,5 +10,5 @@ Scenario: Contact us form
 	And Click Submit button
 	Then Verify success message Success! Your details have been submitted successfully. is visible
 	When Click Home button
-#	And Close ad
+	And Close ad
 	Then Verify that user is navigated to home page

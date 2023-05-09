@@ -9,13 +9,19 @@ using TechTalk.SpecFlow;
 //Allows parallel executions of test cases inside different feature files (meaning multiple test cases in one feature file can not run in parallel)
 [assembly:Parallelizable(ParallelScope.Fixtures)]
 //Limits the number of possible parallel executions
-[assembly:LevelOfParallelism(4)]
+[assembly:LevelOfParallelism(3)]
 
 namespace PSF.Support
 {
     [Binding]
     public sealed class Hooks
     {
+        public List<dynamic> dynamics;
+        public int count;
+
+
+
+
         private readonly ScenarioContext _scenarioContext;
         public IPage Page;
         public static IBrowser Browser;
@@ -52,6 +58,8 @@ namespace PSF.Support
         [BeforeScenario]
         public async Task BeforeScenario()
         {
+            dynamics= new List<dynamic>();
+
             ExtentTest = ExtentReport.CreateTest(TestContext.CurrentContext.Test.Name);
 
             StepsNode = ExtentTest.CreateNode("Steps:");

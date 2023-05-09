@@ -20,6 +20,7 @@ namespace PSF.Pages
         ILocator _lnkContactUs => _page.GetByRole(AriaRole.Link, new() { Name = "Contact us" });
         ILocator _lnkTestCases => _page.GetByRole(AriaRole.Link, new() { Name = "Test Cases" });
         ILocator _lnkProducts => _page.GetByRole(AriaRole.Link, new() { Name = " Products" });
+        ILocator _lnkCart => _page.GetByRole(AriaRole.Link, new() { Name = " Cart" });
 
         public async Task ClickSignUpLogin()
         {
@@ -48,6 +49,10 @@ namespace PSF.Pages
         public async Task ClickProducts()
         {
             await _lnkProducts.ClickAsync();
+        }
+        public async Task ClickCart()
+        {
+            await _lnkCart.ClickAsync();
         }
     }
 }

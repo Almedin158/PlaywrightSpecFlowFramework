@@ -67,7 +67,6 @@ namespace PSF.Support
 
             // Deserialize the JSON into an object
             dynamic obj = JsonConvert.DeserializeObject(json);
-
             return obj;
         }
 
@@ -80,11 +79,6 @@ namespace PSF.Support
 
         public void WriteToJsonFile(string filePath, object obj)
         {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException($"The file '{filePath}' does not exist.");
-            }
-
             string updatedJson = JsonConvert.SerializeObject(obj);
 
             File.WriteAllText(filePath, updatedJson);

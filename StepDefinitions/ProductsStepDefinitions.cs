@@ -11,12 +11,13 @@ namespace PSF.StepDefinitions
         HeaderPage HeaderPage;
         ProductsPage ProductsPage;
         ProductDetailsPage ProductDetailsPage;
-
+        CartPage CartPage;
         public ProductsStepDefinitions(Hooks hooks)
         {
             HeaderPage = new HeaderPage(hooks);
             ProductsPage = new ProductsPage(hooks);
             ProductDetailsPage = new ProductDetailsPage(hooks);
+            CartPage = new CartPage(hooks);
         }
 
         [When(@"Click on Products button")]
@@ -40,7 +41,7 @@ namespace PSF.StepDefinitions
         [When(@"Click on View Product of first product")]
         public async Task WhenClickOnViewProductOfFirstProduct()
         {
-            await ProductsPage.ClickViewProductFirstProduct();
+            await ProductsPage.ClickViewProduct(1);
         }
 
         [Then(@"User is landed to product detail page")]
@@ -72,5 +73,72 @@ namespace PSF.StepDefinitions
         {
             await ProductsPage.AssertProductsRelatedToSearch(table);
         }
+
+        [When(@"Hover over first product and click Add to cart")]
+        public async Task WhenHoverOverFirstProductAndClickAddToCart()
+        {
+            await ProductsPage.HoverOverProductAddToCart(0);
+        }
+
+        [When(@"Click Continue Shopping button")]
+        public async Task WhenClickContinueShoppingButton()
+        {
+            await ProductsPage.ClickContinueShopping();
+        }
+
+        [When(@"Hover over second product and click Add to cart")]
+        public async Task WhenHoverOverSecondProductAndClickAddToCart()
+        {
+            await ProductsPage.HoverOverProductAddToCart(1);
+        }
+
+        [When(@"Click View Cart button")]
+        public async Task WhenClickViewCartButton()
+        {
+            await ProductsPage.ClickViewCart();
+        }
+
+        [Then(@"Verify both products are added to Cart")]
+        public async Task ThenVerifyBothProductsAreAddedToCart()
+        {
+            await CartPage.AssertProducts();
+        }
+
+        [Then(@"Verify their prices, quantity and total price")]
+        public async Task ThenVerifyTheirPricesQuantityAndTotalPrice()
+        {
+            await CartPage.AssertProductsDetails();
+        }
+
+        [When(@"Click View Product for any product on home page")]
+        public async Task WhenClickViewProductForAnyProductOnHomePage()
+        {
+            await ProductsPage.ClickViewProduct(1);
+        }
+
+        [Then(@"Verify product detail is opened")]
+        public async Task ThenVerifyProductDetailIsOpened()
+        {
+            await ProductDetailsPage.AssertUrl();
+        }
+
+        [When(@"Increase quantity to (.*)")]
+        public async Task WhenIncreaseQuantityTo(int p0)
+        {
+            await ProductDetailsPage.ChangeQuantity(p0);
+        }
+
+        [When(@"Click Add to cart button")]
+        public async Task WhenClickAddToCartButton()
+        {
+            await ProductDetailsPage.ClickAddToCart();
+        }
+
+        [Then(@"Verify that product is displayed in cart page with exact quantity (.*)")]
+        public async Task ThenVerifyThatProductIsDisplayedInCartPageWithExactQuantity(int p0)
+        {
+            await CartPage.AssertProductQuantity(p0);
+        }
+
     }
 }

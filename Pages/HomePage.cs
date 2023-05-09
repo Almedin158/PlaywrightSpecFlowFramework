@@ -27,5 +27,9 @@ namespace PSF.Pages
             }");
             Assert.IsTrue(loaded);
         }
+        public async Task ScrollTOBottomOfPage()
+        {
+            await _page.Keyboard.DownAsync("End");
+        }
     }
 }

@@ -99,6 +99,9 @@ this.ScenarioInitialize(scenarioInfo);
 #line 6
  testRunner.When("Click on Test Cases button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
+#line 7
+ testRunner.And("Close ad", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
 #line 8
  testRunner.Then("Verify user is navigated to test cases page successfully", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden

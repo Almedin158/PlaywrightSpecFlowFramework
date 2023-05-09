@@ -13,7 +13,6 @@ namespace PSF.Pages
     internal class ProductDetailsPage
     {
         public IPage _page;
-
         public ProductDetailsPage(Hooks hooks)
         {
             _page = hooks.Page;
@@ -25,6 +24,8 @@ namespace PSF.Pages
         ILocator _txtAvailability => _page.GetByText("Availability:");
         ILocator _txtCondition => _page.GetByText("Condition:");
         ILocator _txtBrand => _page.GetByText("Brand:");
+        ILocator _inputQuantity => _page.Locator("#quantity");
+        ILocator _btnAddToCart => _page.GetByRole(AriaRole.Button, new() { Name = " Add to cart" });
 
         public async Task AssertUrl()
         {
@@ -38,6 +39,15 @@ namespace PSF.Pages
             Assert.IsTrue(await _txtAvailability.IsVisibleAsync());
             Assert.IsTrue(await _txtCondition.IsVisibleAsync());
             Assert.IsTrue(await _txtBrand.IsVisibleAsync());
+        }
+        public async Task ChangeQuantity(int number)
+        {
+            await _inputQuantity.ClearAsync();
+            await _inputQuantity.FillAsync(number.ToString());
+        }
+        public async Task ClickAddToCart()
+        {
+            await _btnAddToCart.ClickAsync();
         }
     }
 }

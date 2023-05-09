@@ -12,28 +12,26 @@ namespace PSF.Pages
             _page = hooks.Page;
         }
 
-        ILocator _btnClose => _page.FrameLocator("iframe[id='aswift_1']").Locator("div[id='dismiss-button']");
-        ILocator _btnClose2 => _page.FrameLocator("iframe[id='ad_iframe']").Locator("div[id='dismiss-button']");
+        ILocator _frame => _page.Locator("//ins[@aria-hidden='false']//iframe");
+        ILocator _btnDismiss => _page.Locator("div[id='dismiss-button']");
 
         public async Task CloseAd()
         {
-            _page.SetDefaultTimeout(3000);
             try
-            { 
-                await _btnClose.ClickAsync();
+            {
+                await _page.FrameLocator("//ins[@aria-hidden='false']//iframe").Locator("div[id='dismiss-button']").ClickAsync();
             }
-            catch 
-            { 
+            catch
+            {
                 try
                 {
-                    await _btnClose2.ClickAsync();
+                    await _page.FrameLocator("//ins[@aria-hidden='false']//iframe").FrameLocator("//iframe").Locator("div[id='dismiss-button']").ClickAsync();
                 }
-                catch 
+                catch
                 {
-
+                    throw new Exception("Was not able to close the ad");
                 }
             }
-            _page.SetDefaultTimeout(30000);
         }
     }
 }

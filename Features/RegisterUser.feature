@@ -15,7 +15,7 @@ Scenario: Register user
 	And Click Create Account button
 	Then Verify that ACCOUNT CREATED! is visible
 	When Click Continue button
-#	And Close ad
+	And Close ad
 	Then Verify that Logged in as username is visible
 	When Click Delete Account button
 	Then Verify that ACCOUNT DELETED! is visible and click Continue button

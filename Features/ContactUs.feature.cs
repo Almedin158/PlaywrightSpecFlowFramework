@@ -118,6 +118,9 @@ this.ScenarioInitialize(scenarioInfo);
 #line 12
  testRunner.When("Click Home button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
+#line 13
+ testRunner.And("Close ad", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
 #line 14
  testRunner.Then("Verify that user is navigated to home page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
