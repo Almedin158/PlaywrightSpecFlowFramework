@@ -29,6 +29,7 @@ Scenario: Add products in cart
 	When Navigate to url http://automationexercise.com
 	Then Verify that home page is visible successfully
 	When Click on Products button
+	And Close ad
 	And Hover over first product and click Add to cart
 	And Click Continue Shopping button
 	And Hover over second product and click Add to cart
