@@ -44,6 +44,12 @@ namespace PSF.StepDefinitions
         {
             await LoginPage.AssertYourEmailOrPasswordIsIncorrectVisible();
         }
+        [When(@"Fill email, password and click Login button")]
+        public async Task WhenFillEmailPasswordAndClickLoginButton(Table table)
+        {
+            await LoginPage.EnterEmailAndPassword(table);
+            await LoginPage.ClickLogin();
+        }
 
     }
 }

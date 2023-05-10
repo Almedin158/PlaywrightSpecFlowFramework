@@ -102,14 +102,14 @@ this.ScenarioInitialize(scenarioInfo);
 #line 7
  testRunner.Then("Verify Login to your account is visible", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Username",
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Email",
                             "Password"});
-                table3.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "ultradummy@ultradummy.com",
                             "ultradummy"});
 #line 8
- testRunner.When("Enter correct email address and password", ((string)(null)), table3, "When ");
+ testRunner.When("Enter correct email address and password", ((string)(null)), table4, "When ");
 #line hidden
 #line 11
  testRunner.And("Click login button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

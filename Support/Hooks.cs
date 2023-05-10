@@ -2,14 +2,13 @@
 using AventStack.ExtentReports.Reporter;
 using Microsoft.Playwright;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using NUnit.Framework.Interfaces;
 using TechTalk.SpecFlow;
 
 //Allows parallel executions of test cases inside different feature files (meaning multiple test cases in one feature file can not run in parallel)
-[assembly:Parallelizable(ParallelScope.Fixtures)]
+[assembly: Parallelizable(ParallelScope.Fixtures)]
 //Limits the number of possible parallel executions
-[assembly:LevelOfParallelism(3)]
+[assembly: LevelOfParallelism(2)]
 
 namespace PSF.Support
 {
@@ -17,10 +16,6 @@ namespace PSF.Support
     public sealed class Hooks
     {
         public List<dynamic> dynamics;
-        public int count;
-
-
-
 
         private readonly ScenarioContext _scenarioContext;
         public IPage Page;

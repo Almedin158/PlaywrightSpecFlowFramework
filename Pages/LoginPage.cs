@@ -67,7 +67,7 @@ namespace PSF.Pages
         public async Task EnterEmailAndPassword(Table table)
         {
             dynamic data = table.CreateDynamicInstance();
-            await _inputLoginEmail.FillAsync(data.Username);
+            await _inputLoginEmail.FillAsync(data.Email);
             await _inputPassword.FillAsync(data.Password);
         }
         public async Task ClickSignUp()

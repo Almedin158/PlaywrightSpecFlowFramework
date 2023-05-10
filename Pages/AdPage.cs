@@ -12,9 +12,6 @@ namespace PSF.Pages
             _page = hooks.Page;
         }
 
-        ILocator _frame => _page.Locator("//ins[@aria-hidden='false']//iframe");
-        ILocator _btnDismiss => _page.Locator("div[id='dismiss-button']");
-
         public async Task CloseAd()
         {
             try
@@ -29,7 +26,8 @@ namespace PSF.Pages
                 }
                 catch
                 {
-                    throw new Exception("Was not able to close the ad");
+                    //I commented this out so it doesn't exit the test in case the ad doesn't appear (sometimes the time the ad appears changes, so sometimes my "Close ad" steps aren't corrent, and in those cases I do not wish to exit the test by throwing an exception).
+                    //throw new Exception("Was not able to close the ad");
                 }
             }
         }

@@ -140,5 +140,16 @@ namespace PSF.StepDefinitions
             await CartPage.AssertProductQuantity(p0);
         }
 
+        [When(@"Click X button corresponding to particular product")]
+        public async Task WhenClickXButtonCorrespondingToParticularProduct()
+        {
+            await CartPage.ClickRemoveProduct();
+        }
+
+        [Then(@"Verify that product is removed from the cart")]
+        public async Task ThenVerifyThatProductIsRemovedFromTheCart()
+        {
+            await CartPage.AssertEmptyCart();
+        }
     }
 }

@@ -30,3 +30,45 @@ Scenario: Register User with existing email
 	| Ultradummy | ultradummy@ultradummy.com |
 	And Click Signup button
 	Then Verify error Email Address already exist! is visible
+	
+Scenario: Place order: register while checkout
+	When Navigate to url http://automationexercise.com
+	Then Verify that home page is visible successfully
+	When Add products to cart
+	And Click Cart button
+	Then Verify that cart page is displayed
+	When Click Proceed To Checkout
+	And Click Register / Login button 
+	And Fill all details in Signup and create account
+	Then Verify ACCOUNT CREATED! and click Continue button
+	When Close ad
+	Then Verify that Logged in as username is visible
+	When Click Cart button
+	And Click Proceed To Checkout button
+	Then Verify Address Details and Review Your Order
+	When Enter description in comment text area and click Place Order
+	And Enter payment details: Name on Card, Card Number, CVC, Expiration date
+	And Click Pay and Confirm Order button
+	Then Verify success message Your order has been placed successfully!
+	When Click Delete Account button
+	Then Verify ACCOUNT DELETED! and click Continue button
+
+Scenario: Place order: register before checkout
+	When Navigate to url http://automationexercise.com
+	Then Verify that home page is visible successfully
+	When Click on Signup / Login button
+	And Fill all details in Signup and create account
+	Then Verify ACCOUNT CREATED! and click Continue button
+	When Close ad
+	Then Verify that Logged in as username is visible
+	When Add products to cart
+	And Click Cart button
+	Then Verify that cart page is displayed
+	When Click Proceed To Checkout
+	Then Verify Address Details and Review Your Order
+	When Enter description in comment text area and click Place Order
+	And Enter payment details: Name on Card, Card Number, CVC, Expiration date
+	And Click Pay and Confirm Order button
+	Then Verify success message Your order has been placed successfully!
+	When Click Delete Account button
+	Then Verify ACCOUNT DELETED! and click Continue button

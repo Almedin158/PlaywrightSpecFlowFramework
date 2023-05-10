@@ -6,7 +6,7 @@ Scenario: Logout User
 	When Click on Signup / Login button
 	Then Verify Login to your account is visible
 	When Enter correct email address and password
-	| Username                  | Password   |
+	| Email                  | Password   |
 	| ultradummy@ultradummy.com | ultradummy |
 	And Click login button
 	Then Verify that Logged in as username is visible

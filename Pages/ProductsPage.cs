@@ -17,12 +17,12 @@ namespace PSF.Pages
     {
         public IPage _page;
         public Utility _utility;
-        public List<dynamic> _products;
+        public Hooks hooks;
         public ProductsPage(Hooks hooks)
         {
             _page = hooks.Page;
             _utility = new Utility();
-            _products = hooks.dynamics;
+            this.hooks= hooks;
         }
 
         ILocator _productsList => _page.Locator("div[class='features_items']");
@@ -81,7 +81,7 @@ namespace PSF.Pages
                     price = await _txtProductPrice.Nth(number).TextContentAsync()
                 };
 
-            _products.Add(obj);
+            hooks.dynamics.Add(obj);
 
             await _product.Nth(number).Locator(_addToCart).ClickAsync();
         }

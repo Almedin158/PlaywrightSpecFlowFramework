@@ -8,6 +8,7 @@ Scenario: Verify all products and product detail page
 	Then Verify user is navigated to ALL PRODUCTS page successfully
 	And The products list is visible
 	When Click on View Product of first product
+	And Close ad
 	Then User is landed to product detail page
 	And Verify that detail is visible: product name, category, price, availability, condition, brand
 
@@ -47,3 +48,12 @@ Scenario: Verify product quantity in cart
 	And Click Add to cart button
 	And Click View Cart button
 	Then Verify that product is displayed in cart page with exact quantity 4
+
+Scenario: Remove products from cart
+	When Navigate to url http://automationexercise.com
+	Then Verify that home page is visible successfully
+	When Add products to cart
+	And Click Cart button
+	Then Verify that cart page is displayed
+	When Click X button corresponding to particular product
+	Then Verify that product is removed from the cart
