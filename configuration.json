@@ -1,0 +1,6 @@
+{
+  "browser": "Chromium",
+  "btrheadless": true,
+  "headless": false,
+  "ibs": false
+}

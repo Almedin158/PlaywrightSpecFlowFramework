@@ -8,7 +8,7 @@ using TechTalk.SpecFlow;
 //Allows parallel executions of test cases inside different feature files (meaning multiple test cases in one feature file can not run in parallel)
 [assembly: Parallelizable(ParallelScope.Fixtures)]
 //Limits the number of possible parallel executions
-[assembly: LevelOfParallelism(4)]
+[assembly: LevelOfParallelism(8)]
 
 namespace PSF.Support
 {
@@ -17,6 +17,8 @@ namespace PSF.Support
     {
         public List<dynamic> dynamics;
 
+        private static dynamic _config;
+        private static Utility _utility;
         private readonly ScenarioContext _scenarioContext;
         public IPage Page;
         public static IBrowser Browser;
@@ -27,13 +29,6 @@ namespace PSF.Support
         private ExtentTest StepsNode;
         public string CurrentStep;
 
-        public enum Browsers
-        {
-            Chromium,
-            Firefox,
-            WebKit
-        }
-
         public Hooks(ScenarioContext scenarioContext)
         {
             _scenarioContext = scenarioContext;
@@ -42,29 +37,67 @@ namespace PSF.Support
         [BeforeTestRun]
         public static async Task BeforeTestRun()
         {
-            //Add extent report here
+            _utility = new Utility();
+            _config = _utility.ReadFromJsonFile("../../../configuration.json");
+
             ExtentReport = new ExtentReports();
             ExtentReport.AttachReporter(new ExtentHtmlReporter(Directory.GetCurrentDirectory()));
 
-            //To skip loggin in each test, you can simply call SetBrowserState and perform the login inside of the function
-            await SetBrowserState();
+            //set ibs (import browser state) in configuration.json to true if you wish to import browser state, else set it to false.
+            if ((bool)_config.ibs)
+            {
+                PlaywrightContext = await Playwright.CreateAsync();
+
+                Browser = await InitializeBrowser((string)_config.browser, (bool)_config.btrheadless);
+
+                BrowserContext = await Browser.NewContextAsync(new BrowserNewContextOptions
+                {
+                    ViewportSize = ViewportSize.NoViewport
+                });
+
+                var page = await BrowserContext.NewPageAsync();
+
+                //Perform the login here
+                await page.GotoAsync("https://www.saucedemo.com/");
+                await page.Locator("input[id='user-name']").FillAsync("standard_user");
+                await page.Locator("input[id='password']").FillAsync("secret_sauce");
+                await page.Locator("input[id='login-button']").ClickAsync();
+
+                //this creates the browser state file
+                await BrowserContext.StorageStateAsync(new()
+                {
+                    Path = "../../../state.json"
+                });
+
+                await page.CloseAsync();
+            }
         }
 
         [BeforeScenario]
         public async Task BeforeScenario()
         {
-            dynamics= new List<dynamic>();
+            dynamics = new List<dynamic>();
 
             ExtentTest = ExtentReport.CreateTest(TestContext.CurrentContext.Test.Name);
 
             StepsNode = ExtentTest.CreateNode("Steps:");
 
             PlaywrightContext = await Playwright.CreateAsync();
-            //Initialise a browser - 'Chromium' can be changed to 'Firefox' or 'Webkit'
-            Browser = await InitializeBrowser(Browsers.Chromium);
 
-            //This will cause an error if SetBrowserState isn't performed and a state.json file does not exist
-            BrowserContext = await GetBrowserState();
+            Browser = await InitializeBrowser((string)_config.browser, (bool)_config.headless);
+
+            var browserContextOptions = new BrowserNewContextOptions
+            {
+                ViewportSize = ViewportSize.NoViewport,
+            };
+
+            //this will import the browser state only if at least one scenario is tagged with "SetState" and ibs in the configuration.json is set to true
+            if (_scenarioContext.ScenarioInfo.Tags.Any(tag => tag.Equals("SetState") && (bool)_config.ibs))
+            {
+                browserContextOptions.StorageStatePath = "../../../state.json";
+            }
+
+            BrowserContext = await Browser.NewContextAsync(browserContextOptions);
 
             Page = await BrowserContext.NewPageAsync();
         }
@@ -125,23 +158,24 @@ namespace PSF.Support
             ExtentReport.Flush();
         }
 
-        public static async Task<IBrowser> InitializeBrowser(Browsers browser, bool headless=true)
+        public static async Task<IBrowser> InitializeBrowser(string browser, bool headless = true)
         {
-            switch(browser) {
-                case Browsers.Firefox:
+            switch (browser)
+            {
+                case "Firefox":
                     return await PlaywrightContext.Firefox.LaunchAsync(new BrowserTypeLaunchOptions
                     {
                         Headless = headless,
-                        Timeout = 5000,
-                        SlowMo=500
+                        //Timeout = 5000,
+                        SlowMo = 500
                     });
-                
-                case Browsers.WebKit:
+
+                case "WebKit":
                     return await PlaywrightContext.Webkit.LaunchAsync(new BrowserTypeLaunchOptions
                     {
                         Headless = headless,
-                        Timeout = 5000,
-                        SlowMo=500
+                        //Timeout = 5000,
+                        SlowMo = 500
                     });
             }
 
@@ -149,52 +183,9 @@ namespace PSF.Support
             {
                 Headless = headless,
                 Args = new[] { "--start-maximized" },
-                Timeout = 5000,
+                //Timeout = 5000,
                 SlowMo = 500
             });
-        }
-
-        public static async Task SetBrowserState()
-        {
-            PlaywrightContext = await Playwright.CreateAsync();
-
-            Browser = await InitializeBrowser(Browsers.Chromium, true);
-
-            BrowserContext = await Browser.NewContextAsync(new BrowserNewContextOptions
-            {
-                ViewportSize = ViewportSize.NoViewport
-            });
-
-            var page = await BrowserContext.NewPageAsync();
-
-            //Perform the login here
-            await page.GotoAsync("https://www.saucedemo.com/");
-            await page.Locator("input[id='user-name']").FillAsync("standard_user");
-            await page.Locator("input[id='password']").FillAsync("secret_sauce");
-            await page.Locator("input[id='login-button']").ClickAsync();
-
-            await BrowserContext.StorageStateAsync(new()
-            {
-                Path = "../../../state.json"
-            });
-
-            await page.CloseAsync();
-        }
-
-        public async Task<IBrowserContext> GetBrowserState()
-        {
-            //State is imported based on tags, at the moment, if a test scenario has a SetState tag, the state will be imported.
-            var browserContextOptions = new BrowserNewContextOptions
-            {
-                ViewportSize = ViewportSize.NoViewport,
-            };
-
-            if (_scenarioContext.ScenarioInfo.Tags.Any(tag => tag.Equals("SetState")))
-            {
-                browserContextOptions.StorageStatePath = "../../../state.json";
-            }
-
-            return await Browser.NewContextAsync(browserContextOptions);
         }
     }
 }
