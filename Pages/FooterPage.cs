@@ -1,13 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
 using PSF.Support;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
 
 namespace PSF.Pages
 {

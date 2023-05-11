@@ -1,13 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
 using PSF.Support;
-using SharpCompress.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -37,6 +30,10 @@ namespace PSF.Pages
         ILocator _btnContinueShopping => _page.GetByRole(AriaRole.Button, new() { Name = "Continue Shopping" });
         ILocator _btnViewCart => _page.GetByRole(AriaRole.Link, new() { Name = "View Cart" });
         ILocator _txtProductPrice => _page.Locator("div[class='overlay-content']>h2");
+        ILocator _txtProductsHeader => _page.Locator("h2[class='title text-center']");
+        ILocator _txtProductBrandsHeader => _page.GetByRole(AriaRole.Heading, new() { Name = "Brands" });
+        ILocator _lnkProductBrandsPolo => _page.GetByRole(AriaRole.Link, new() { Name = "Polo" });
+        ILocator _lnkProductBrandsHM => _page.GetByRole(AriaRole.Link, new() { Name = "H&M" });
         public async Task AssertUrl()
         {
             Assert.AreEqual("https://automationexercise.com/products", _page.Url);
@@ -61,6 +58,24 @@ namespace PSF.Pages
 
                 StringAssert.Contains(name.ToLower(), productName.ToLower());
             }
+        }
+        public async Task AssertProductsCategoryHeader(string category)
+        {
+            Assert.AreEqual(category.ToUpper(), _txtProductsHeader.TextContentAsync().Result.ToUpper());
+        }
+        public async Task AssertProductBrandsVisible()
+        {
+            Assert.IsTrue(await _txtProductBrandsHeader.IsVisibleAsync());
+        }
+        public async Task AssertProductBrandsUrl()
+        {
+            StringAssert.Contains("https://automationexercise.com/brand_products/", _page.Url);
+            Assert.IsTrue(await _product.CountAsync() != 0);
+        }
+        public async Task AssertUrlAndProducts()
+        {
+            StringAssert.Contains("https://automationexercise.com/brand_products/", _page.Url);
+            Assert.IsTrue(await _product.CountAsync()!=0);
         }
         public async Task ClickViewProduct(int number)
         {
@@ -93,5 +108,14 @@ namespace PSF.Pages
         {
             await _btnViewCart.ClickAsync();
         }
+        public async Task ClickBrandsPolo()
+        {
+            await _lnkProductBrandsPolo.ClickAsync();   
+        }
+        public async Task ClickBrandsHM()
+        {
+            await _lnkProductBrandsHM.ClickAsync();
+        }
+        
     }
 }

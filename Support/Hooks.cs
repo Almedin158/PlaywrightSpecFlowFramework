@@ -8,7 +8,7 @@ using TechTalk.SpecFlow;
 //Allows parallel executions of test cases inside different feature files (meaning multiple test cases in one feature file can not run in parallel)
 [assembly: Parallelizable(ParallelScope.Fixtures)]
 //Limits the number of possible parallel executions
-[assembly: LevelOfParallelism(2)]
+[assembly: LevelOfParallelism(4)]
 
 namespace PSF.Support
 {
@@ -113,8 +113,6 @@ namespace PSF.Support
             }
 
             await Page.CloseAsync();
-
-            //var a = _scenarioContext.StepContext.StepInfo.Text;
         }
 
         [AfterTestRun]
@@ -127,7 +125,7 @@ namespace PSF.Support
             ExtentReport.Flush();
         }
 
-        public static async Task<IBrowser> InitializeBrowser(Browsers browser, bool headless=false)
+        public static async Task<IBrowser> InitializeBrowser(Browsers browser, bool headless=true)
         {
             switch(browser) {
                 case Browsers.Firefox:

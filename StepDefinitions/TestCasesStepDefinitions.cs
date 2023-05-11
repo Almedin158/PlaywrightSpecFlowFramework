@@ -1,6 +1,5 @@
 using PSF.Pages;
 using PSF.Support;
-using System;
 using TechTalk.SpecFlow;
 
 namespace PSF.StepDefinitions

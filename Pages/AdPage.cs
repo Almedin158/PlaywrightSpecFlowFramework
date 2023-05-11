@@ -14,6 +14,7 @@ namespace PSF.Pages
 
         public async Task CloseAd()
         {
+            //_page.SetDefaultTimeout(5000);
             try
             {
                 await _page.FrameLocator("//ins[@aria-hidden='false']//iframe").Locator("div[id='dismiss-button']").ClickAsync();
@@ -30,6 +31,7 @@ namespace PSF.Pages
                     //throw new Exception("Was not able to close the ad");
                 }
             }
+            //_page.SetDefaultTimeout(30000);
         }
     }
 }

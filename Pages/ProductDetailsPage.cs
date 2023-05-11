@@ -1,12 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
 using PSF.Support;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PSF.Pages
 {
